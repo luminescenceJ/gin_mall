@@ -18,6 +18,14 @@ func NewRouter() *gin.Engine {
 		})
 		v1.POST("user/register", api.UserRegister)
 		v1.POST("user/login", api.UserLogin)
+
+		authed := v1.Group("/") // 登录保护
+		authed.Use(middleware.JWT())
+		{
+			authed.POST("user/update", api.UserUpdate)
+			authed.POST("user/avatar", api.UpdateAvatar)
+		}
+
 	}
 	return r
 }

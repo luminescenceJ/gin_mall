@@ -7,10 +7,10 @@ import (
 
 type User struct {
 	gorm.Model
-	Username       string `gorm:"unique"`
+	UserName       string `gorm:"unique"`
+	NickName       string
 	Email          string
 	PasswordDigest string
-	NickName       string
 	Status         string
 	Avatar         string `gorm:"size:1000"`
 	Money          string // 密文存储

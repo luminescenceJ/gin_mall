@@ -14,6 +14,19 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+func ParseToken(token string) (*Claims, error) {
+	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+		return jwSecret, nil
+	})
+
+	if tokenClaims != nil {
+		if claims, ok := tokenClaims.Claims.(*Claims); ok && tokenClaims.Valid {
+			return claims, nil
+		}
+	}
+	return nil, err
+}
+
 func GenerateToken(id uint, userName string, authority int) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(24 * time.Hour)

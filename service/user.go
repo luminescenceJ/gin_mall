@@ -7,6 +7,7 @@ import (
 	"gin_mal_tmp/pkg/e"
 	"gin_mal_tmp/pkg/util"
 	"gin_mal_tmp/serializer"
+	"mime/multipart"
 )
 
 type UserService struct {
@@ -14,7 +15,6 @@ type UserService struct {
 	UserName string `json:"user_name" form:"user_name" binding:"required"`
 	Password string `json:"password" form:"password" binding:"required"`
 	Key      string `json:"key" form:"key"` //前端验证 传输加密密文
-
 }
 
 func (us *UserService) Register(ctx context.Context) serializer.Response {
@@ -47,7 +47,7 @@ func (us *UserService) Register(ctx context.Context) serializer.Response {
 		}
 	}
 	user = model.User{
-		Username: us.UserName,
+		UserName: us.UserName,
 		NickName: us.NickName,
 		Status:   model.Activate,
 		Avatar:   "avatar.jpg",
@@ -112,5 +112,74 @@ func (us *UserService) Login(ctx context.Context) serializer.Response {
 			Token: token,
 		},
 		Msg: e.GetMsg(code),
+	}
+}
+
+func (us *UserService) Update(ctx context.Context, uId uint) serializer.Response {
+	var user *model.User
+	var err error
+	code := e.Success
+	userDao := dao.NewUserDao(ctx)
+	user, err = userDao.GetUserById(uId)
+	if us.NickName != "" && us.UserName != "" {
+		user.NickName = us.NickName
+		user.UserName = us.UserName
+	}
+	err = userDao.UpdateUserById(uId, user)
+	if err != nil {
+		code = e.Error
+		return serializer.Response{
+			Status: code,
+			Msg:    e.GetMsg(code),
+			Error:  err.Error(),
+		}
+	}
+
+	return serializer.Response{
+		Status: code,
+		Msg:    e.GetMsg(code),
+		Data:   serializer.BuildUser(user),
+	}
+}
+
+func (us *UserService) Post(ctx context.Context, uId uint, file multipart.File, fileSize int64) serializer.Response {
+	var user *model.User
+	var err error
+	code := e.Success
+
+	userDao := dao.NewUserDao(ctx)
+	user, err = userDao.GetUserById(uId)
+	if err != nil {
+		code = e.Error
+		return serializer.Response{
+			Status: code,
+			Msg:    e.GetMsg(code),
+			Error:  err.Error(),
+		}
+	}
+	path, err := UploadAvatarToLocalStatic(file, uId, us.UserName)
+	if err != nil {
+		code = e.ErrorUploadFile
+		return serializer.Response{
+			Status: code,
+			Msg:    e.GetMsg(code),
+			Error:  err.Error(),
+		}
+	}
+	user.Avatar = path
+	err = userDao.UpdateUserById(uId, user)
+	if err != nil {
+		code = e.ErrorUploadFile
+		return serializer.Response{
+			Status: code,
+			Msg:    e.GetMsg(code),
+			Error:  err.Error(),
+		}
+	}
+
+	return serializer.Response{
+		Status: code,
+		Msg:    e.GetMsg(code),
+		Data:   serializer.BuildUser(user),
 	}
 }

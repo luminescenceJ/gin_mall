@@ -1,7 +1,6 @@
 package serializer
 
 import (
-	"fmt"
 	"gin_mal_tmp/conf"
 	"gin_mal_tmp/model"
 )
@@ -18,10 +17,9 @@ type User struct {
 }
 
 func BuildUser(user *model.User) *User {
-	fmt.Println(conf.Host, conf.HttpPort, conf.AvatarPath, user.Avatar)
 	return &User{
 		ID:        user.ID,
-		Username:  user.Username,
+		Username:  user.UserName,
 		Nickname:  user.NickName,
 		Email:     user.Email,
 		Status:    user.Status,
