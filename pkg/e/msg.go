@@ -15,7 +15,8 @@ var MsgFlag = map[int]string{
 	ErrorAuthToken:             "token认证失败",
 	ErrorAuthCheckTokenTimeout: "token 已经过期了",
 	ErrorUploadFile:            "图片上传失败",
-
+	ErrorSendEmail:             "发送邮件出错",
+	ErrorBindEmail:             "绑定邮箱出错",
 	// product模块错误 4000x
 }
 

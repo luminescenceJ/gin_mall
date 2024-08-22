@@ -51,3 +51,35 @@ func UpdateAvatar(c *gin.Context) {
 		c.JSON(http.StatusOK, res)
 	}
 }
+
+func SendEmail(c *gin.Context) {
+	var sendEmail service.SendEmailService
+	claims, _ := util.ParseToken(c.GetHeader("access_token"))
+	if err := c.ShouldBind(&sendEmail); err != nil {
+		c.JSON(http.StatusBadRequest, err)
+	} else {
+		res := sendEmail.Send(c.Request.Context(), claims.ID)
+		c.JSON(http.StatusOK, res)
+	}
+}
+
+func ValidEmail(c *gin.Context) {
+	var validEmail service.ValidEmailService
+	if err := c.ShouldBind(&validEmail); err != nil {
+		c.JSON(http.StatusBadRequest, err)
+	} else {
+		res := validEmail.Valid(c.Request.Context(), c.Query("token"))
+		c.JSON(http.StatusOK, res)
+	}
+}
+
+func ShowMoney(c *gin.Context) {
+	var showMoney service.ShowMoneyService
+	claims, _ := util.ParseToken(c.GetHeader("access_token"))
+	if err := c.ShouldBind(&showMoney); err != nil {
+		c.JSON(http.StatusBadRequest, err)
+	} else {
+		res := showMoney.Show(c.Request.Context(), claims.ID)
+		c.JSON(http.StatusOK, res)
+	}
+}
