@@ -2,17 +2,26 @@ package dao
 
 import (
 	"context"
+	"gin_mal_tmp/conf"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"gorm.io/plugin/dbresolver"
+	"strings"
 	"time"
 )
 
 var _db *gorm.DB
 
+func InitMysql() {
+	// mysql read service -main
+	pathRead := strings.Join([]string{conf.DbUser, ":", conf.DbPassword, "@tcp(", conf.DbHost, ":", conf.DbPort, ")/", conf.DbName, "?charset=utf8mb4&parseTime=True"}, "")
+	//mysql write service -sub
+	pathWrite := strings.Join([]string{conf.DbUser, ":", conf.DbPassword, "@tcp(", conf.DbHost, ":", conf.DbPort, ")/", conf.DbName, "?charset=utf8mb4&parseTime=True"}, "")
+	Database(pathRead, pathWrite)
+}
 func Database(connRead, connWrite string) {
 	var ormLogger logger.Interface
 	if gin.Mode() == "debug" {

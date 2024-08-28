@@ -18,6 +18,8 @@ var MsgFlag = map[int]string{
 	ErrorSendEmail:             "发送邮件出错",
 	ErrorBindEmail:             "绑定邮箱出错",
 	// product模块错误 4000x
+
+	ErrorProductImgUpload: "商品图片上传失败",
 }
 
 //获取状态码信息

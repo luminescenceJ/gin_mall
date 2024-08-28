@@ -1,9 +1,7 @@
 package conf
 
 import (
-	"gin_mal_tmp/dao"
 	"gopkg.in/ini.v1"
-	"strings"
 )
 
 var (
@@ -32,7 +30,7 @@ var (
 	AvatarPath  string
 )
 
-func Init() {
+func InitConfig() {
 	// local environment variables
 	file, err := ini.Load("./conf/conf.ini")
 	if err != nil {
@@ -44,11 +42,6 @@ func Init() {
 	LoadEmail(file)
 	LoadPhotoPath(file)
 
-	// mysql read service -main
-	pathRead := strings.Join([]string{DbUser, ":", DbPassword, "@tcp(", DbHost, ":", DbPort, ")/", DbName, "?charset=utf8mb4&parseTime=True"}, "")
-	//mysql write service -sub
-	pathWrite := strings.Join([]string{DbUser, ":", DbPassword, "@tcp(", DbHost, ":", DbPort, ")/", DbName, "?charset=utf8mb4&parseTime=True"}, "")
-	dao.Database(pathRead, pathWrite)
 }
 
 func LoadServer(file *ini.File) {

@@ -14,4 +14,6 @@ const (
 	ErrorUploadFile            = 30007
 	ErrorSendEmail             = 30008
 	ErrorBindEmail             = 30009
+
+	ErrorProductImgUpload = 40001
 )
